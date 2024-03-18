@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 # Constants ----------------------------------------------------------------
 tm = 30 # in msec
 EL = -65 # =Vreset in mV
@@ -6,10 +7,22 @@ Vth = -50 # in mv
 Rm = 90 # in MOhms
 Vzero = -67
 
-Ie = int (input("Enter the current in nA: "))
+Ie = float (input("Enter the current in nA: "))
 
-t = 0   # each iteration represents a ms
-while (t<1000):
+duration = 10000000000   # each iteration represents a ms
+V = []
+time = []
+for t in range(0, duration):
     Vt = EL + Rm * Ie + (Vzero - EL - Rm*Ie)*np.exp(-t/tm)
-    print("V(" + str(t) + ") = " + str(Vt))
+
+    V.append(Vt)
+    time.append(t)
+    print("V(" + str(t) + ") = " + str(V[t]))
     t+=1
+
+plt.plot(time, V)
+plt.xlabel('Time (ms)')
+plt.ylabel('Membrane Potential (mV)')
+plt.title('Leaky Integrate and Fire Neuron')
+plt.grid(True)
+plt.show()
