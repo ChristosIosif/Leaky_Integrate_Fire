@@ -1,57 +1,53 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import math
-# Constants ----------------------------------------------------------------
+# Constants ------------------------------------------------------
 tm = 30 # in msec
 EL = -65 # =Vreset in mV
 Vth = -50 # in mv
 Rm = 90 # in MOhms
 Vzero = -67
 Vreset = EL
-Trefractory = 200 # in msec
+Trefractory = 50 # in msec
+duration = 200   # each iteration represents a ms
+# ----------------------------------------------------------------
 
 #Ie = float (input("Enter the current in nA: "))
 Ie = 1
 
-duration = 3000   # each iteration represents a ms
+# Initializations
 V = np.zeros(duration)
 time = np.zeros(duration)
-cnt = 1000
+refCount = 1000
 V[0] = Vzero
-
-sum = Vreset
-t=1
-
 i=1
+
+# run simulation
 for t in range(1, duration):
 
-    if (cnt <= Trefractory):
-        cnt += 1
+    if (refCount <= Trefractory):
+        refCount += 1
         V[t] = Vreset
-        sum = Vreset
         time[t] = t
         continue
     
     V[t] = (EL + Rm * Ie + (Vzero - EL - Rm*Ie)*np.exp(-i/tm))
-    #print(str((Vzero - EL - Rm*Ie)*np.exp(-t/tm)) +"    " + str(EL + Rm * Ie))
-    sum += (V[t])
+  
   
     i+=1
     
-    if (sum >= Vth):
-        V[t] = Vreset
-        sum = Vreset
+    if (V[t] >= Vth):
+        #V[t] = Vreset
         i=1
-        #print("hello " + str(t))
-        cnt = 1
+        refCount = 1
     
-
+    time[t] = t
     #print (V[t])   
     #if (Rm*Ie>Vth-EL):
     #    tisi = tm * math.log((Rm*Ie)/(Rm*Ie+EL-Vth))
     #    Vt = EL + Rm * Ie + (-Rm*Ie)*np.exp(-tisi/tm)
 
-    time[t] = t
+    
 
 
 plt.plot(time, V)
